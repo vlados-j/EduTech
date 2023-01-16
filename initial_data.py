@@ -103,15 +103,13 @@ def assign_students_to_groups():
 
 def many_to_many_creation():
     with main.app.app_context():
-        all_students = db.session.execute(db.select(StudentModel))
-        for student in all_students.scalars().all():
+        all_students = db.session.execute(db.select(StudentModel)).scalars().all()
+        all_courses = db.session.execute(db.select(CourseModel)).scalars().all()
+        for student in all_students:
             for i in range(1, random.randint(2, 4)):
                 while True:
-                    all_courses = db.session.execute(db.select(CourseModel))
-                    course = random.choice(all_courses.scalars().all())
+                    course = random.choice(all_courses)
                     if course not in student.courses:
                         student.courses.append(course)
                         db.session.commit()
                         break
-
-

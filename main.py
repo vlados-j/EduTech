@@ -25,7 +25,7 @@ class Groups(Resource):
 class Students(Resource):
     def get(self):
         args = request.args
-        course_name = args.get('course')
+        course_name = args.get('course_name')
         return find_students_by_course(course_name)
 
     def post(self):
@@ -63,4 +63,3 @@ api.add_resource(Courses, '/api/v1/students/<int:student_id>/courses/')
 if __name__ == '__main__':
     initial_data.create_all_initial_data()
     app.run(debug=True)
-

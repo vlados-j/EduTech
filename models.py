@@ -29,4 +29,3 @@ class CourseModel(db.Model):
     __tablename__ = "courses"
     name = db.Column(db.String, primary_key=True)
     description = db.Column(db.String)
-
