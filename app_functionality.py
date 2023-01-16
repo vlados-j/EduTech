@@ -1,5 +1,5 @@
 import main
-from models import db, CourseModel, StudentModel, GroupModel
+from models import db, CourseModel, StudentModel, GroupModel, students_courses
 
 
 def find_all_groups(student_count: int):
@@ -15,9 +15,9 @@ def find_all_groups(student_count: int):
 def find_students_by_course(course_name: str):
     """Find all students related to the course with a given name."""
     with main.app.app_context():
-        course = db.session.execute(db.select(CourseModel).where(CourseModel.name == course_name)).scalars().first()
-        if course:
-            return [f'{student.first_name} {student.last_name}' for student in course.students]
+        students = db.session.execute(db.select(StudentModel).join(students_courses).
+                                      where(students_courses.columns.course_name == course_name)).scalars().all()
+        return [f'{student.first_name} {student.last_name}' for student in students]
 
 
 def add_new_student(first_name: str, last_name: str):
