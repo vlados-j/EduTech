@@ -53,9 +53,11 @@ def remove_student_from_course(student_id: int, course: str):
     """Remove the student from one of his or her courses"""
     with main.app.app_context():
         student = db.session.execute(db.select(StudentModel).where(StudentModel.id == student_id)).scalars().first()
-        if student:
-            course = db.session.execute(db.select(CourseModel).where(CourseModel.name == course)).scalars().first()
-            if course in student.courses:
-                student.courses.remove(course)
-                db.session.commit()
-
+        students_course = db.session.execute(db.select(CourseModel).
+                                             join(students_courses).
+                                             where(students_courses.columns.student_id == student_id,
+                                                   students_courses.columns.course_name == course)).\
+            scalars().first()
+        if student and students_course:
+            student.courses.remove(students_course)
+            db.session.commit()
