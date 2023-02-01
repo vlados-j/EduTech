@@ -1,30 +1,29 @@
 from models import db, StudentModel, GroupModel, CourseModel
 from sqlalchemy.exc import ProgrammingError
-import main
 import random
 import string
 
 
-def create_all_initial_data():
+def create_all_initial_data(app):
     try:
-        with main.app.app_context():
+        with app.app_context():
             db.session.execute(db.select(StudentModel))
     except ProgrammingError:
-        create_tables()
-        create_groups()
-        create_courses()
-        create_students()
-        assign_students_to_groups()
-        many_to_many_creation()
+        create_tables(app)
+        create_groups(app)
+        create_courses(app)
+        create_students(app)
+        assign_students_to_groups(app)
+        many_to_many_creation(app)
 
 
-def create_tables():
-    with main.app.app_context():
+def create_tables(app):
+    with app.app_context():
         db.create_all()
 
 
-def create_groups():
-    with main.app.app_context():
+def create_groups(app):
+    with app.app_context():
         for i in range(0, 10):
             group = GroupModel(name=group_name_generator())
             db.session.add(group)
@@ -37,7 +36,7 @@ def group_name_generator():
     return uppercase_letters + '-' + digits
 
 
-def create_courses():
+def create_courses(app):
     subjects = [('Artificial Intelligences', 'Such programs cover various programming languages, tools, and libraries '
                                              'to equip students with the required competencies.'),
                 ('Blockchain Technology', 'Blockchain is a rapidly growing discipline capable of bringing about signif'
@@ -60,15 +59,15 @@ def create_courses():
                                     'd in 2023.'),
                 ('Cybersecurity', 'In the wake of rising cyber crimes, the demand for security experts has also picked'
                                   ' up.')]
-    with main.app.app_context():
+    with app.app_context():
         for subject, description in subjects:
             course = CourseModel(name=subject, description=description)
             db.session.add(course)
             db.session.commit()
 
 
-def create_students():
-    with main.app.app_context():
+def create_students(app):
+    with app.app_context():
         for name in random_names():
             first_name, last_name = name.split()
             student = StudentModel(first_name=first_name, last_name=last_name)
@@ -90,8 +89,8 @@ def random_names():
     return result
 
 
-def assign_students_to_groups():
-    with main.app.app_context():
+def assign_students_to_groups(app):
+    with app.app_context():
         all_students = db.session.execute(db.select(StudentModel))
         groups = db.session.execute(db.select(GroupModel))
         list_of_groups = [group.name for group in groups.scalars().all()]
@@ -101,8 +100,8 @@ def assign_students_to_groups():
             db.session.commit()
 
 
-def many_to_many_creation():
-    with main.app.app_context():
+def many_to_many_creation(app):
+    with app.app_context():
         all_students = db.session.execute(db.select(StudentModel)).scalars().all()
         all_courses = db.session.execute(db.select(CourseModel)).scalars().all()
         for student in all_students:

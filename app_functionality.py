@@ -1,5 +1,6 @@
 import main
 from models import db, CourseModel, StudentModel, GroupModel, students_courses
+from flask import current_app
 
 
 def find_all_groups(student_count: int):
