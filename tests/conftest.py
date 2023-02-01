@@ -7,7 +7,9 @@ from models import db, GroupModel, StudentModel, CourseModel
 def app():
     from main import create_app
     temporal_db_creation()
-    app = create_app('config.TestingConfig')
+    app, api = create_app('config.TestingConfig')
+    with app.app_context():
+        db.create_all()
     yield app
     temporal_db_deletion()
 

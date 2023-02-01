@@ -9,3 +9,4 @@ def test_request_example(client):
     print(response.data) #['XF-81', 'OC-69', 'AY-14', 'LK-22', 'HQ-07', 'DO-41', 'VE-47', 'RE-42', 'QY-32', 'EP-96']
     assert response.status_code == 200
 
+
