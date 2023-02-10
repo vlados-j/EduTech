@@ -1,15 +1,16 @@
 import pytest
 import psycopg2
-from models import db
+from models import db, GroupModel, StudentModel, CourseModel
 
 
 @pytest.fixture()
 def app():
     from main import create_app
     temporal_db_creation()
-    app, api = create_app('config.TestingConfig')
+    app = create_app('config.TestingConfig')
     with app.app_context():
         db.create_all()
+    temporal_db_data_creation(app)
     yield app
     with app.app_context():
         db.engine.dispose()
@@ -41,3 +42,25 @@ def temporal_db_deletion():
     sql_command3 = '''DROP DATABASE test_university;'''
     cursor.execute(sql_command3)
     conn.close()
+
+
+def temporal_db_data_creation(app):
+    with app.app_context():
+        group_names = ['AB-1', 'AB-2', 'AB-3']
+        for group_name in group_names:
+            new_group = GroupModel(name=group_name)
+            db.session.add(new_group)
+            db.session.commit()
+        course = CourseModel(name='Blockchain Technology', description='Test description')
+        db.session.add(course)
+        student_names = [('Alex', 'Smith', 'AB-1'), ('Olivia', 'Johnson', 'AB-1'), ('Alex', 'Williams', 'AB-2'),
+                         ('Emma', 'Brown', 'AB-2'), ('Oliver', 'Jones', 'AB-2'), ('James', 'Miller', 'AB-3'),
+                         ('Ava', 'Davis', 'AB-3'), ('William', 'Garcia', 'AB-3'), ('Mia', 'Wilson', 'AB-3')]
+        for student in student_names:
+            first_name, last_name, group = student[0], student[1], student[2]
+            new_student = StudentModel(first_name=first_name, last_name=last_name)
+            new_student.group_id = group
+            if first_name == 'Alex':
+                new_student.courses.append(course)
+            db.session.add(new_student)
+            db.session.commit()

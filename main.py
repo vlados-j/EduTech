@@ -13,7 +13,7 @@ def create_app(config):
     api.add_resource(Groups, '/api/v1/groups/')
     api.add_resource(Students, '/api/v1/students/')
     api.add_resource(Courses, '/api/v1/students/<int:student_id>/courses/')
-    return app, api
+    return app
 
 
 class Groups(Resource):
@@ -61,6 +61,6 @@ class Courses(Resource):
 
 
 if __name__ == '__main__':
-    app, api = create_app('config.DevelopmentConfig')
+    app = create_app('config.DevelopmentConfig')
     initial_data.create_all_initial_data(app)
     app.run(debug=True)
