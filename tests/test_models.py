@@ -1,12 +1,36 @@
 from models import db, StudentModel, GroupModel, CourseModel
-# from sqlalchemy import *
-# from flask_sqlalchemy import SQLAlchemy
-# import psycopg2
 
 
-def test_request_example(client):
-    response = client.get('/api/v1/groups/?student_count=40')
-    print(response.data) #['XF-81', 'OC-69', 'AY-14', 'LK-22', 'HQ-07', 'DO-41', 'VE-47', 'RE-42', 'QY-32', 'EP-96']
-    assert response.status_code == 200
+def test_GroupModel(app):
+    with app.app_context():
+        group = GroupModel(name='AB-12')
+        db.session.add(group)
+        db.session.commit()
+        group_from_db = db.session.execute(db.select(GroupModel)).scalars().first()
+        assert group_from_db.name == 'AB-12'
 
 
+def test_StudentModel(app):
+    with app.app_context():
+        group = GroupModel(name='AB-12')
+        db.session.add(group)
+        student = StudentModel(first_name='Alex', last_name='Miller')
+        student.group_id = 'AB-12'
+        db.session.add(student)
+        db.session.commit()
+        student_from_db = db.session.execute(db.select(StudentModel)).scalars().first()
+        print(student_from_db.id, student_from_db.first_name, student_from_db.last_name, student_from_db.group_id)
+        assert student_from_db.id == 1
+        assert student_from_db.first_name == 'Alex'
+        assert student_from_db.last_name == 'Miller'
+        assert student_from_db.group_id == 'AB-12'
+
+
+def test_CourseModel(app):
+    with app.app_context():
+        course = CourseModel(name='Blockchain Technology', description='Test Description')
+        db.session.add(course)
+        db.session.commit()
+        course_from_db = db.session.execute(db.select(CourseModel)).scalars().first()
+        assert course_from_db.name == 'Blockchain Technology'
+        assert course_from_db.description == 'Test Description'

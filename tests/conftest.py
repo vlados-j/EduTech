@@ -1,6 +1,6 @@
 import pytest
 import psycopg2
-from models import db, GroupModel, StudentModel, CourseModel
+from models import db
 
 
 @pytest.fixture()
@@ -11,6 +11,8 @@ def app():
     with app.app_context():
         db.create_all()
     yield app
+    with app.app_context():
+        db.engine.dispose()
     temporal_db_deletion()
 
 
@@ -36,6 +38,6 @@ def temporal_db_deletion():
     )
     conn.autocommit = True
     cursor = conn.cursor()
-    sql_command = '''DROP DATABASE test_university'''
-    cursor.execute(sql_command)
+    sql_command3 = '''DROP DATABASE test_university;'''
+    cursor.execute(sql_command3)
     conn.close()
