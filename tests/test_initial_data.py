@@ -7,7 +7,7 @@ from unittest.mock import patch
 def test_create_groups(app):
     create_groups(app)
     with app.app_context():
-        group = db.session.execute(db.select(GroupModel)).scalars().first()
+        group = db.session.execute(db.select(GroupModel).where(GroupModel.id == 13)).scalars().first()
         assert isinstance(group, GroupModel)
 
 
@@ -23,16 +23,15 @@ def test_create_courses(app):
     create_courses(app)
     with app.app_context():
         course = db.session.execute(db.select(CourseModel).
-                                    where(CourseModel.name == 'Blockchain Technology')).scalars().first()
-        assert course.description == 'Blockchain is a rapidly growing discipline capable of bringing about significant' \
-                                     ' transformations in the fields of real estate, healthcare, finance, insurance, ' \
-                                     'among several others.'
+                                    where(CourseModel.name == 'Digital Marketing')).scalars().first()
+        assert course.description == 'Digital marketing is an exciting subject for professionals like brand managers,' \
+                                     ' sales personnel, entrepreneurs, and marketers.'
 
 
 def test_create_students(app):
     create_students(app)
     with app.app_context():
-        random_student = db.session.execute(db.select(StudentModel)).scalars().first()
+        random_student = db.session.execute(db.select(StudentModel).where(StudentModel.id == 209)).scalars().first()
         assert isinstance(random_student, StudentModel)
 
 
@@ -45,16 +44,14 @@ def test_random_names():
 
 @patch('initial_data.random.choice')
 def test_assign_students_to_groups(mocked_random, app):
-    mocked_random.return_value = 'AB-12'
+    mocked_random.return_value = 1
     with app.app_context():
-        group = GroupModel(name='AB-12')
-        db.session.add(group)
         student = StudentModel(first_name='Alex', last_name='Miller')
         db.session.add(student)
         db.session.commit()
         assign_students_to_groups(app)
         student_from_db = db.session.execute(db.select(StudentModel)).scalars().first()
-        assert student_from_db.group_id == 'AB-12'
+        assert student_from_db.group_id == 1
 
 
 @patch('initial_data.random.randint')
@@ -63,9 +60,7 @@ def test_many_to_many_creation(mocked_randint, app):
     with app.app_context():
         course = CourseModel(name='Blockchain Development', description='Test Description')
         db.session.add(course)
-        student = StudentModel(first_name='Alex', last_name='Miller')
-        db.session.add(student)
         db.session.commit()
         many_to_many_creation(app)
         student_from_db = db.session.execute(db.select(StudentModel)).scalars().first()
-        assert isinstance(student_from_db.courses[0], CourseModel)
+        assert student_from_db.courses[1].name == 'Blockchain Development'

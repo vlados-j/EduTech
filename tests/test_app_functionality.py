@@ -1,4 +1,4 @@
-from models import db, GroupModel, CourseModel, StudentModel
+from models import db, StudentModel
 from app_functionality import find_all_groups, find_students_by_course, add_new_student, delete_student, \
     add_student_to_course, remove_student_from_course
 
@@ -10,7 +10,7 @@ def test_find_all_groups(app):
 
 def test_find_students_by_course(app):
     with app.app_context():
-        assert find_students_by_course('Blockchain Technology') == ['Alex Smith', 'Alex Williams']
+        assert find_students_by_course('Test Course') == ['Alex Smith', 'Alex Williams']
 
 
 def test_add_new_student(app):
@@ -31,14 +31,14 @@ def test_delete_student(app):
 
 def test_add_student_to_course(app):
     with app.app_context():
-        add_student_to_course(['Blockchain Technology', 'Fake Course'], 2)
+        add_student_to_course(['Test Course', 'Fake Course'], 2)
         student = db.session.execute(db.select(StudentModel).where(StudentModel.id == 2)).scalars().first()
         course = [course.name for course in student.courses]
-        assert course == ['Blockchain Technology']
+        assert course == ['Test Course']
 
 
 def test_remove_student_from_course(app):
     with app.app_context():
-        remove_student_from_course(1, 'Blockchain Technology')
+        remove_student_from_course(1, 'Test Course')
         student = db.session.execute(db.select(StudentModel).where(StudentModel.id == 1)).scalars().first()
         assert student.courses == []

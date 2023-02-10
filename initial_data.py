@@ -93,7 +93,7 @@ def assign_students_to_groups(app):
     with app.app_context():
         all_students = db.session.execute(db.select(StudentModel))
         groups = db.session.execute(db.select(GroupModel))
-        list_of_groups = [group.name for group in groups.scalars().all()]
+        list_of_groups = [group.id for group in groups.scalars().all()]
         list_of_groups.append(None)
         for student in all_students.scalars().all():
             student.group_id = random.choice(list_of_groups)

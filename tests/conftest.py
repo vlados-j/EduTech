@@ -51,11 +51,11 @@ def temporal_db_data_creation(app):
             new_group = GroupModel(name=group_name)
             db.session.add(new_group)
             db.session.commit()
-        course = CourseModel(name='Blockchain Technology', description='Test description')
+        course = CourseModel(name='Test Course', description='Test description')
         db.session.add(course)
-        student_names = [('Alex', 'Smith', 'AB-1'), ('Olivia', 'Johnson', 'AB-1'), ('Alex', 'Williams', 'AB-2'),
-                         ('Emma', 'Brown', 'AB-2'), ('Oliver', 'Jones', 'AB-2'), ('James', 'Miller', 'AB-3'),
-                         ('Ava', 'Davis', 'AB-3'), ('William', 'Garcia', 'AB-3'), ('Mia', 'Wilson', 'AB-3')]
+        student_names = [('Alex', 'Smith', 1), ('Olivia', 'Johnson', 1), ('Alex', 'Williams', 2),
+                         ('Emma', 'Brown', 2), ('Oliver', 'Jones', 2), ('James', 'Miller', 3),
+                         ('Ava', 'Davis', 3), ('William', 'Garcia', 3), ('Mia', 'Wilson', 3)]
         for student in student_names:
             first_name, last_name, group = student[0], student[1], student[2]
             new_student = StudentModel(first_name=first_name, last_name=last_name)
